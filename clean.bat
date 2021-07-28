@@ -26,4 +26,5 @@ del *.sct /s
 del *.hex /s
 del *.map /s
 del *.orig /s
+del *.dbgconf /s
 exit
