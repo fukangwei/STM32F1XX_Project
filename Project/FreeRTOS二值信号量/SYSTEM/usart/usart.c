@@ -75,7 +75,7 @@ void USART1_IRQHandler ( void ) {
                 if ( Res == 0x0d ) {
                     USART_RX_STA |= 0x4000;
                 } else {
-                    USART_RX_BUF[USART_RX_STA & 0X3FFF] = Res ;
+                    USART_RX_BUF[USART_RX_STA & 0X3FFF] = Res;
                     USART_RX_STA++;
 
                     if ( USART_RX_STA > ( USART_REC_LEN - 1 ) ) {
@@ -86,8 +86,8 @@ void USART1_IRQHandler ( void ) {
         }
     }
 
-    if ( ( USART_RX_STA & 0x8000 ) && ( BinarySemaphore != NULL ) ) { /* 接收到数据，并且二值信号量有效 */
-        xSemaphoreGiveFromISR ( BinarySemaphore, &xHigherPriorityTaskWoken ); /* 释放二值信号量 */
+    if ( ( USART_RX_STA & 0x8000 ) && ( BinarySemaphore != NULL ) ) {
+        xSemaphoreGiveFromISR ( BinarySemaphore, &xHigherPriorityTaskWoken );
         portYIELD_FROM_ISR ( xHigherPriorityTaskWoken );
     }
 }

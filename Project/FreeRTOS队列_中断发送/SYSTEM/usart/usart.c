@@ -24,8 +24,8 @@ int fputc ( int ch, FILE *f ) {
 }
 #endif
 
-u8 USART_RX_BUF[USART_REC_LEN]; /* 接收缓冲 */
-u16 USART_RX_STA = 0; /* 接收状态标记 */
+u8 USART_RX_BUF[USART_REC_LEN];
+u16 USART_RX_STA = 0;
 
 void uart_init ( u32 bound ) {
     GPIO_InitTypeDef GPIO_InitStructure;
@@ -75,7 +75,7 @@ void USART1_IRQHandler ( void ) {
                 if ( Res == 0x0d ) {
                     USART_RX_STA |= 0x4000;
                 } else {
-                    USART_RX_BUF[USART_RX_STA & 0X3FFF] = Res ;
+                    USART_RX_BUF[USART_RX_STA & 0X3FFF] = Res;
                     USART_RX_STA++;
 
                     if ( USART_RX_STA > ( USART_REC_LEN - 1 ) ) {
