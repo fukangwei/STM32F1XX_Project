@@ -2,13 +2,13 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-static u8  fac_us = 0;                          //us延时倍乘数
-static u16 fac_ms = 0;                          //ms延时倍乘数,在ucos下,代表每个节拍的ms数
+static u8  fac_us = 0;
+static u16 fac_ms = 0;
 
 extern void xPortSysTickHandler ( void );
 
 void SysTick_Handler ( void ) {
-    if ( xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED ) { //系统已经运行
+    if ( xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED ) {
         xPortSysTickHandler();
     }
 }
