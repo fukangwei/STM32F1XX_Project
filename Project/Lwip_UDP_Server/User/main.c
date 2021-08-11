@@ -11,12 +11,11 @@
 #include "netif/etharp.h"
 #include "netif/ethernetif.h"
 #include "arch/sys_arch.h"
-#include "udp_client.h"
+#include "udp_server.h"
 
 #define CLOCKTICKS_PER_MS 10 /* 定义时钟节拍 */
 
 static ip_addr_t ipaddr, netmask, gw; /* 定义IP地址 */
-static ip_addr_t udp_server_ipaddr;
 struct netif enc28j60_netif; /* 定义网络接口 */
 u32_t last_arp_time;
 u32_t last_tcp_time;
@@ -58,15 +57,15 @@ int main ( void ) {
     NVIC_Configuration();
     uart_init ( 9600 );
     LED_Init();
+    IP4_ADDR ( &ipaddr, 192, 168, 2, 30 );
+    IP4_ADDR ( &gw, 192, 168, 2, 1 );
+    IP4_ADDR ( &netmask, 255, 255, 255, 0 );
+    init_lwip_timer(); /* 初始化LWIP定时器 */
 
     while ( ENC28J60_Init() ) {
         printf ( "ENC28J60 init fail\r\n" );
     }
 
-    IP4_ADDR ( &ipaddr, 192, 168, 2, 30 );
-    IP4_ADDR ( &gw, 192, 168, 2, 1 );
-    IP4_ADDR ( &netmask, 255, 255, 255, 0 );
-    init_lwip_timer(); /* 初始化LWIP定时器 */
     lwip_init(); /* 初始化LWIP协议栈，执行检查用户所有可配置的值，初始化所有的模块 */
 
     /* 添加网络接口 */
@@ -76,8 +75,7 @@ int main ( void ) {
 
     netif_set_default ( &enc28j60_netif ); /* 注册默认的网络接口 */
     netif_set_up ( &enc28j60_netif ); /* 建立网络接口用于处理通信 */
-    IP4_ADDR ( &udp_server_ipaddr, 192, 168, 2, 3 );
-    Init_UDP_Client ( udp_server_ipaddr );
+    Init_UDP_Server();
 
     while ( 1 ) {
         static int i = 0;
@@ -87,9 +85,9 @@ int main ( void ) {
         if ( i++ > 20 ) {
             i = 0;
             LED0 = !LED0;
-            sprintf ( ( char * ) lwip_send_buf, "This is a Udp Client\r\n" );
+            sprintf ( ( char * ) lwip_send_buf, "This is a Udp Server\r\n" );
             lwip_flag |= LWIP_SEND_DATA;
-            udp_client_send_data(); /* 发送数据 */
+            udp_server_send_data(); /* 发送数据 */
         }
 
         if ( lwip_flag & LWIP_NEW_DATA ) { /* 接收数据 */
